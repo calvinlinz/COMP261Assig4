@@ -16,7 +16,6 @@ public class Loop implements RobotProgramNode{
     @Override
     public void execute(Robot robot) {
         // TODO Auto-generated method stub
-            
         
     }
 }
