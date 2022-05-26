@@ -87,9 +87,39 @@ public class Parser {
 	 */
 	static RobotProgramNode parseProgram(Scanner s) {
 		// THE PARSER GOES HERE
-		
+		Queue<RobotProgramNode> statements = new LinkedList();
+		Queue<RobotProgramNode> block = new LinkedList();
+		HashSet<String> acts = new HashSet<>();
+		acts.add("turnL");
+		acts.add("turnR");
+		acts.add("move");
+		acts.add("wait");
+		acts.add("takeFuel");
 
-		return null;
+		while (s.hasNext()) {
+			STMT next = new STMT(s.next());
+			if(!(next.checkAction() == false && next.checkLoop() == false)){
+				if(next.checkLoop()== true){
+					while (!s.next().equals("}")) {
+						next = new STMT(s.next());
+						block.add(next);
+						
+					}
+					statements.add(new Loop(block));
+
+				}else if(next.checkAction() == true){
+					statements.add(new ActNode(next.toString()));
+
+				}
+
+			}
+
+		}
+
+		Program prog = new Program(statements);
+
+		return prog;
+
 	}
 
 	// utility methods for the parser
@@ -172,4 +202,5 @@ public class Parser {
 
 }
 
-// You could add the node classes here, as long as they are not declared public (or private)
+// You could add the node classes here, as long as they are not declared public
+// (or private)

@@ -1,21 +1,31 @@
+import java.util.Queue;
 import java.util.Scanner;
 
 public class Loop implements RobotProgramNode{
 
     public static final String loopConst = "loop";
 
-    String loop;
+    
+    Block block = null;
 
-    public Loop (Scanner s){
-        String str = s.next();
-        if(!str.equals(loopConst)){
-            Parser.fail("Failed To Read Loop", s);
-        }
-        this.loop = str;
+    public Loop(Queue<RobotProgramNode> q){
+        block = new Block(q);
     }
+
+
+
     @Override
     public void execute(Robot robot) {
         // TODO Auto-generated method stub
+        while(robot.getFuel()>0){
+            block.execute(robot);
+        }
         
+        
+        
+    }
+
+    public String toString(){
+        return loopConst; 
     }
 }

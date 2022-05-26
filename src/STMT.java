@@ -1,24 +1,58 @@
-import java.util.Scanner;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+
+import javax.xml.namespace.QName;
 
 public class STMT implements RobotProgramNode{
 
     public static final String endLine = ";";
+    Queue<RobotProgramNode> statements = new LinkedList<>();
+    public HashSet<String> acts = new HashSet<>();
+    RobotProgramNode temp = null;
 
-    String statement;
+    String s;
+
+
     
-    public STMT(Scanner s){
-        String str = s.next();
-        if(!str.equals(";")){
-            Parser.fail("STMT Fail", s);
-        }
-        this.statement = str;
-
+    public STMT(String s){
+        acts.add("turnL");
+        acts.add("turnR");
+        acts.add("move");
+        acts.add("wait");
+        acts.add("takeFuel");
+       this.s = s;
     }
+
+    public Boolean checkAction(){
+       if(acts.contains(this.s)){
+          return true;
+       }
+       return false;
+    }
+
+    public Boolean checkLoop(){
+        if(this.s.equals("loop")){
+            System.out.println(s);
+           return true;
+        }
+        return false;
+     }
+
+    public String toString(){
+        return s;
+    }
+
+
+        
+
 
     @Override
     public void execute(Robot robot) {
         // TODO Auto-generated method stub
-       
+        while(!statements.isEmpty()){
+            statements.poll().equals(robot);
+        }
         
     }
 }

@@ -1,6 +1,7 @@
-import java.util.Scanner;
+import java.util.HashSet;
 
 public class ActNode implements RobotProgramNode{
+    public HashSet<String> acts = new HashSet<>();
 
     public static final String TURNL = "turnL";
     public static final String TURNR = "turnR";
@@ -8,24 +9,11 @@ public class ActNode implements RobotProgramNode{
     public static final String TAKEFUEL = "takeFuel";
     public static final String WAIT = "wait";
 
-    String actionType;
+ 
+
+    String actionType = null;
     
-    public ActNode(Scanner s){
-        String str = s.next();
-        switch(str){
-            case MOVE:
-                break;
-            case TURNL:
-                break;
-            case TURNR:
-                break;
-            case TAKEFUEL:
-                break;
-            case WAIT: 
-                break;
-            default:
-                Parser.fail(" fail", s);
-        }
+    public ActNode(String str){
         this.actionType = str;
     }
 
@@ -47,14 +35,15 @@ public class ActNode implements RobotProgramNode{
                 robot.takeFuel();
                 break;
             case WAIT: 
-                try {
-                    robot.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                robot.idleWait();
                 break;
         }
+        
 
+    }
+
+    public String toString(){
+        return actionType;
     }
 
 }
