@@ -14,7 +14,18 @@ public class Block implements RobotProgramNode {
     @Override
     public void execute(Robot robot) {
         // TODO Auto-generated method stub
-            q.poll().execute(robot);
+        for(RobotProgramNode node : q){
+            node.execute(robot);
+        } 
+    
+     
     }
     
+    public String toString(){
+        String string = "";
+        for(RobotProgramNode node : q){
+            string += node.toString();
+        }
+        return string;
+    }
 }

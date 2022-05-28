@@ -37,6 +37,7 @@ public class Parser {
 		return null;
 	}
 
+
 	/** For testing the parser without requiring the world */
 
 	public static void main(String[] args) {
@@ -95,15 +96,22 @@ public class Parser {
 		acts.add("move");
 		acts.add("wait");
 		acts.add("takeFuel");
+		acts.add("shieldOn");
+		acts.add("shieldOff");
 
 		while (s.hasNext()) {
 			STMT next = new STMT(s.next());
 			if(!(next.checkAction() == false && next.checkLoop() == false)){
-				if(next.checkLoop()== true){
-					while (!s.next().equals("}")) {
+				if(next.checkLoop() == true){
+					while (s.hasNext()) {
 						next = new STMT(s.next());
-						block.add(next);
-						
+						if(next.toString().equals("}")){
+							break;
+						}
+						if(!next.toString().equals(";") && !next.toString().equals("{") && next.checkAction()){
+							ActNode act = new ActNode(next.toString());
+							block.add(act);
+						} 
 					}
 					statements.add(new Loop(block));
 

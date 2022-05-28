@@ -33,11 +33,23 @@ public class STMT implements RobotProgramNode{
 
     public Boolean checkLoop(){
         if(this.s.equals("loop")){
-            System.out.println(s);
            return true;
         }
         return false;
      }
+
+    public Boolean checkIf(){
+        if(this.s.equals("if")){
+            return true;
+        }
+        return false;
+    }
+    public Boolean checkWhile(){
+        if(this.s.equals("while")){
+            return true;
+        }
+        return false;
+    }
 
     public String toString(){
         return s;

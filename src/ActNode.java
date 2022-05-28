@@ -1,13 +1,14 @@
 import java.util.HashSet;
 
 public class ActNode implements RobotProgramNode{
-    public HashSet<String> acts = new HashSet<>();
 
     public static final String TURNL = "turnL";
     public static final String TURNR = "turnR";
     public static final String MOVE = "move";
     public static final String TAKEFUEL = "takeFuel";
     public static final String WAIT = "wait";
+    public static final String SHIELDON = "shieldOn";
+    public static final String SHIELDOFF = "shieldOff";
 
  
 
@@ -36,6 +37,12 @@ public class ActNode implements RobotProgramNode{
                 break;
             case WAIT: 
                 robot.idleWait();
+                break;
+            case SHIELDON:
+                robot.setFinished(true);
+                break;
+            case SHIELDOFF: 
+                robot.setShield(false);
                 break;
         }
         

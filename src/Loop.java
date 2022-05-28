@@ -17,15 +17,12 @@ public class Loop implements RobotProgramNode{
     @Override
     public void execute(Robot robot) {
         // TODO Auto-generated method stub
-        while(robot.getFuel()>0){
+        while(robot.getFuel() > 0){
             block.execute(robot);
         }
-        
-        
-        
     }
 
     public String toString(){
-        return loopConst; 
+        return loopConst + block.toString();
     }
 }
