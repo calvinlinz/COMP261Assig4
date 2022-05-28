@@ -37,7 +37,6 @@ public class Parser {
 		return null;
 	}
 
-
 	/** For testing the parser without requiring the world */
 
 	public static void main(String[] args) {
@@ -83,13 +82,103 @@ public class Parser {
 	static Pattern OPENBRACE = Pattern.compile("\\{");
 	static Pattern CLOSEBRACE = Pattern.compile("\\}");
 
+	static void doLoop(Scanner s, Queue<RobotProgramNode> statements) {
+		Queue<RobotProgramNode> block = new LinkedList();
+		while (s.hasNext()) {
+			STMT next = new STMT(s.next());
+			if (next.toString().equals("}")) {
+				break;
+			}
+			if (next.checkIf()) {
+				doIf(s, block);
+			}
+			if (next.checkWhile()) {
+				doWhile(s, block);
+			}
+			if (next.checkLoop()) {
+				doLoop(s, block);
+			}
+			if (next.checkAction()) {
+				ActNode act = new ActNode(next.toString());
+				block.add(act);
+			}
+		}
+		statements.add(new Loop(block));
+	}
+
+	static void doWhile(Scanner s, Queue<RobotProgramNode> statements) {
+		Queue<RobotProgramNode> block = new LinkedList();
+		s.next();
+		Relop relop = new Relop(s.next());
+		s.next();
+		Sen sen = new Sen(s.next());
+		s.next();
+		Cond condition = new Cond(relop, sen, Integer.parseInt(s.next()));
+		s.next();
+		s.next();
+		s.next();
+		while (s.hasNext()) {
+			STMT next = new STMT(s.next());
+			if (next.checkIf()) {
+				doIf(s, block);
+			}
+			if (next.checkWhile()) {
+				doWhile(s, block);
+			}
+			if (next.checkLoop()) {
+				doLoop(s, block);
+			}
+			if (next.checkAction()) {
+				ActNode act = new ActNode(next.toString());
+				block.add(act);
+			}
+		}
+		WhileNode whileNode = new WhileNode(block);
+		whileNode.setConditions(condition);
+		statements.add(whileNode);
+	}
+
+	static void doIf(Scanner s, Queue<RobotProgramNode> statements) {
+		Queue<RobotProgramNode> block = new LinkedList();
+		s.next();
+		Relop relop = new Relop(s.next());
+		s.next();
+		Sen sen = new Sen(s.next());
+		s.next();
+		Cond condition = new Cond(relop, sen, Integer.parseInt(s.next()));
+		s.next();
+		s.next();
+		s.next();
+		while (s.hasNext()) {
+			STMT next = new STMT(s.next());
+			if (next.toString().equals("}")) {
+				break;
+			}
+			if (next.checkIf()) {
+				doIf(s, block);
+			}
+			if (next.checkWhile()) {
+				doWhile(s, block);
+			}
+			if (next.checkLoop()) {
+				doLoop(s, block);
+			}
+			if (next.checkAction()) {
+				ActNode act = new ActNode(next.toString());
+				block.add(act);
+			}
+		}
+		IfNode ifNode = new IfNode(block);
+		ifNode.setConditions(condition);
+		statements.add(ifNode);
+	}
+
 	/**
 	 * See assignment handout for the grammar.
 	 */
 	static RobotProgramNode parseProgram(Scanner s) {
 		// THE PARSER GOES HERE
 		Queue<RobotProgramNode> statements = new LinkedList();
-		Queue<RobotProgramNode> block = new LinkedList();
 		HashSet<String> acts = new HashSet<>();
 		acts.add("turnL");
 		acts.add("turnR");
@@ -101,21 +190,21 @@ public class Parser {
 
 		while (s.hasNext()) {
 			STMT next = new STMT(s.next());
-			if(!(next.checkAction() == false && next.checkLoop() == false)){
-				if(next.checkLoop() == true){
-					while (s.hasNext()) {
-						next = new STMT(s.next());
-						if(next.toString().equals("}")){
-							break;
-						}
-						if(!next.toString().equals(";") && !next.toString().equals("{") && next.checkAction()){
-							ActNode act = new ActNode(next.toString());
-							block.add(act);
-						} 
-					}
-					statements.add(new Loop(block));
+			if (next.isStatement()) {
 
-				}else if(next.checkAction() == true){
+				// checking for while
+				if (next.checkWhile()) {
+					doWhile(s, statements);
+				}
+				// checking for if
+				if (next.checkIf()) {
+					doWhile(s, statements);
+				}
+				// checking for loop.
+				if (next.checkLoop() == true) {
+					doLoop(s, statements);
+					// checking for just action.
+				} else if (next.checkAction() == true) {
 					statements.add(new ActNode(next.toString()));
 
 				}

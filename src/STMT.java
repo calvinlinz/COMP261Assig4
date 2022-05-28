@@ -24,6 +24,13 @@ public class STMT implements RobotProgramNode{
        this.s = s;
     }
 
+    public Boolean isStatement(){
+        if(checkAction() || checkLoop() || checkIf() || checkWhile()){
+            return true;
+        }
+        else return false;
+    }
+
     public Boolean checkAction(){
        if(acts.contains(this.s)){
           return true;

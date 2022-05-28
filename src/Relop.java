@@ -7,5 +7,9 @@ public class Relop{
     public String getRelop() {
         return relop;
     }
+
+    public String toString(){
+        return relop;
+    }
     
 }

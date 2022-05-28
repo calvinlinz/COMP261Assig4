@@ -34,9 +34,9 @@ public class Cond implements Conditions{
 
   
     
-    // public String toString(){
-    //     return "if(" + cond.toString() + "){" + sen.toString() + "}";
-    // }
+    public String toString(){
+        return relop.toString() + "(" + sen.toString() + "," + num + ")";
+    }
     
     
 }
