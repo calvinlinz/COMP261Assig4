@@ -39,7 +39,7 @@ public class ActNode implements RobotProgramNode{
                 robot.idleWait();
                 break;
             case SHIELDON:
-                robot.setFinished(true);
+                robot.setShield(true);
                 break;
             case SHIELDOFF: 
                 robot.setShield(false);

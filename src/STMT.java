@@ -21,6 +21,8 @@ public class STMT implements RobotProgramNode{
         acts.add("move");
         acts.add("wait");
         acts.add("takeFuel");
+        acts.add("shieldOn");
+        acts.add("shieldOff");
        this.s = s;
     }
 

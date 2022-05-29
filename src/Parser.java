@@ -118,7 +118,11 @@ public class Parser {
 		s.next();
 		s.next();
 		while (s.hasNext()) {
+			
 			STMT next = new STMT(s.next());
+			if (next.toString().equals("}")) {
+				break;
+			}
 			if (next.checkIf()) {
 				doIf(s, block);
 			}
@@ -179,15 +183,6 @@ public class Parser {
 	static RobotProgramNode parseProgram(Scanner s) {
 		// THE PARSER GOES HERE
 		Queue<RobotProgramNode> statements = new LinkedList();
-		HashSet<String> acts = new HashSet<>();
-		acts.add("turnL");
-		acts.add("turnR");
-		acts.add("move");
-		acts.add("wait");
-		acts.add("takeFuel");
-		acts.add("shieldOn");
-		acts.add("shieldOff");
-
 		while (s.hasNext()) {
 			STMT next = new STMT(s.next());
 			if (next.isStatement()) {
@@ -198,7 +193,7 @@ public class Parser {
 				}
 				// checking for if
 				if (next.checkIf()) {
-					doWhile(s, statements);
+					doIf(s, statements);
 				}
 				// checking for loop.
 				if (next.checkLoop() == true) {

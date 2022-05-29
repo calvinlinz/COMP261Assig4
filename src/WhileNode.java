@@ -9,7 +9,6 @@ public class WhileNode implements RobotProgramNode {
         this.block = block;
     }
 
-
     public void setConditions(Conditions cond) {
         this.cond = cond;
     }

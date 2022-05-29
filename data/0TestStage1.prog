@@ -1,0 +1,26 @@
+while(gt(fuelLeft, 0)){
+    while(eq(numBarrels, 0)){
+        wait;
+    }
+    if(lt(barrelFB, 0)){
+        turnAround;
+    }
+    if(gt(barrelFB, 0)){ 
+        while(gt(barrelFB, 0)) {
+            if(gt(numBarrels, 0)){
+                move; 
+            }
+        }
+    }
+    if(lt(barrelLR, 0)){
+        turnL;
+    }
+    if(gt(barrelLR, 0)){
+        turnR;
+    }
+    if(eq(barrelFB, 0)){
+			if(eq(barrelLR, 0)){
+				takeFuel;
+		}
+	}
+}
