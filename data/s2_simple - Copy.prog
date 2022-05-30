@@ -1,0 +1,10 @@
+loop{
+    if(gt(fuelLeft,50)){
+        move(2);
+        turnL;
+    } else {
+        wait(2);
+        move(1);
+        turnR;
+    }
+}

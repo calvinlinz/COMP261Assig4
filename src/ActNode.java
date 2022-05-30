@@ -12,19 +12,29 @@ public class ActNode implements RobotProgramNode{
     public static final String TURNAROUND = "turnAround";
 
  
-
+    Expression expr = null;
     String actionType = null;
     
     public ActNode(String str){
         this.actionType = str;
     }
 
+    public ActNode(String str, Expression exr){
+        this.actionType = str;
+        this.expr = exr;
+    }
 
     @Override
     public void execute(Robot robot) {
         // TODO Auto-generated method stub
         switch(this.actionType){
             case MOVE:
+            if(expr!=null){
+                for(int i=0; i<expr.evaluate(robot);i++){
+                    robot.move();
+                }
+                break;
+            }
                 robot.move();
                 break;
             case TURNL:
@@ -37,6 +47,12 @@ public class ActNode implements RobotProgramNode{
                 robot.takeFuel();
                 break;
             case WAIT: 
+            if(expr!=null){
+                for(int i=0; i<expr.evaluate(robot);i++){
+                    robot.idleWait();
+                }
+                break;
+            }
                 robot.idleWait();
                 break;
             case TURNAROUND: 

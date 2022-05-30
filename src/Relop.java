@@ -1,5 +1,6 @@
 public class Relop{
     String relop;
+    
     public Relop (String relop){
         this.relop = relop;
     }

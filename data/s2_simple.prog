@@ -1,23 +1,11 @@
-while(gt(fuelLeft, sub(5, 5))){
-	if(eq(numBarrels, 0)){
-		wait;
-	} else{
-		if(and(eq(barrelFB, 0), eq(barrelLR, 0))){
+while(or(gt(fuelLeft, sub(mul(div(5, add(1, 4)), -1), -1)), eq(1, 0))){
+	shieldOff;
+	if(not(not(eq(numBarrels, 0)))){
+		if(and(eq(oppLR, 0), eq(oppFB, 1))){
 			takeFuel;
 		} else{
-			if(eq(0, barrelFB)){
-				if(lt(barrelLR, 0)){
-					turnL;
-				} else{
-					turnR;
-				}
-			} else{
-				if(gt(barrelFB, 0)){
-					move;
-				} else{
-					turnAround;
-				}
+				wait(1);
 			}
-		}
+		
 	}
 }

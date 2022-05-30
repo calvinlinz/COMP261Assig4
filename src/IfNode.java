@@ -4,7 +4,7 @@ public class IfNode implements RobotProgramNode{
         
     private Cond cond;
     private Queue<RobotProgramNode> block;
-    private RobotProgramNode elseNode;
+    private Queue<RobotProgramNode> elseBlock;
     
     public IfNode(Queue<RobotProgramNode> block){
         this.block = block;
@@ -14,23 +14,24 @@ public class IfNode implements RobotProgramNode{
         this.cond = cond;
     }
 
-    public void setElseBlock(RobotProgramNode elseBlock){
-        this.elseNode = elseBlock;
+    public void setElseBlock(Queue<RobotProgramNode> elseBlock){
+        this.elseBlock = elseBlock;
     }
     
     @Override
     public void execute(Robot robot) {
-        System.out.println("getting to if statment");
         // TODO Auto-generated method stub
         if(cond.evaluate(robot)){
             for(RobotProgramNode node : block){
-                System.out.println(node.toString());
                 node.execute(robot);
             }
+        }else{
+            if(elseBlock != null){
+                for(RobotProgramNode node : elseBlock){
+                    node.execute(robot);
+                }
+            }
         }
-        // }else{
-        //     elseNode.execute(robot);
-        // }
     }
     
         

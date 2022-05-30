@@ -32,7 +32,19 @@ public class STMT implements RobotProgramNode{
     }
 
     public Boolean isStatement(){
-        if(checkAction() || checkLoop() || checkIf() || checkWhile() || checkRelop() || checkSen()){
+        if(checkAction() || checkLoop() || checkIf() || checkWhile() || checkRelop() || checkSen() || isOperator() || isCond() || checkElse() || checkAction2()){
+            return true;
+        }
+        else return false;
+    }
+    public Boolean isOperator(){
+        if(s.equals("add") || s.equals("mul") || s.equals("sub") || s.equals("div")){
+            return true;
+        }
+        else return false;
+    }
+    public Boolean isCond(){
+        if(s.equals("and") || s.equals("or")){
             return true;
         }
         else return false;
@@ -44,6 +56,21 @@ public class STMT implements RobotProgramNode{
        }
        return false;
     }
+
+    public Boolean checkAction2(){
+        if(this.s.contains("move") || this.s.contains("wait")){
+            return true;
+        }
+        return false;
+    }
+
+    public Boolean checkElse(){
+        if(this.s.equals("else")){
+           return true;
+        }
+        return false;
+     }
+ 
 
     public Boolean checkRelop(){
         Matcher rt = RELOP.matcher(s);
