@@ -2,14 +2,14 @@ import java.util.Queue;
 
 public class WhileNode implements RobotProgramNode {
     
-    private Conditions cond;
+    private Cond cond;
     private Queue<RobotProgramNode> block;
     
     public WhileNode(Queue<RobotProgramNode> block){
         this.block = block;
     }
 
-    public void setConditions(Conditions cond) {
+    public void setConditions(Cond cond) {
         this.cond = cond;
     }
     
@@ -25,7 +25,13 @@ public class WhileNode implements RobotProgramNode {
     }
     
     public String toString(){
-        return "while(" + cond.toString() + "){" + block.toString() + "}";
+        String insert = "";
+        for(RobotProgramNode node : block){
+            insert += "     "+ node.toString() + ";";
+        }
+        String str =   "while(" + cond.toString() + "){" + "\n" + insert + "\n}";
+
+        return str;
     }
 
 }

@@ -81,14 +81,51 @@ public class Parser {
 	static Pattern CLOSEPAREN = Pattern.compile("\\)");
 	static Pattern OPENBRACE = Pattern.compile("\\{");
 	static Pattern CLOSEBRACE = Pattern.compile("\\}");
+	static Pattern RELOP = Pattern.compile("lt|gt|eq");
+	static Pattern SEN = Pattern.compile("fuelLeft|oppLR|oppFB|numBarrels|barrelLR|barrelFB|wallDist");
+	static Pattern COND = Pattern.compile("and|or|not");
+	static Pattern OP = Pattern.compile("add|sub|mul|div");
+	static Pattern COMMA = Pattern.compile(",");
+	static Pattern SEMICOLON = Pattern.compile(";");
+
+
+
+	static Cond findCondition(Scanner s){
+		Relop relop = null;
+		Sen sen = null;
+		Cond condition = null;
+		while(relop == null || sen == null || condition == null){
+			String next = s.next();
+			Matcher rt = RELOP.matcher(next);
+			Matcher st = SEN.matcher(next);
+			Matcher ct = NUMPAT.matcher(next);
+			if(rt.matches()){
+				relop = new Relop(next);
+			}
+			if(st.matches()){
+				sen = new Sen(next);
+			}
+			if(SEN!= null && RELOP != null){
+				if(ct.matches())condition = new Cond(relop, sen,Integer.parseInt(next));
+			}
+			if(next.equals("}"))Parser.fail("failed to find condition", s);
+		}
+		return condition;
+	}
+
+	static void doElse(Scanner s, Queue<RobotProgramNode> statements){
+
+	}
 
 	static void doLoop(Scanner s, Queue<RobotProgramNode> statements) {
 		Queue<RobotProgramNode> block = new LinkedList();
-		while (s.hasNext()) {
+		while (true) {
 			STMT next = new STMT(s.next());
 			if (next.toString().equals("}")) {
 				break;
 			}
+			if(!next.isStatement() && !next.toString().equals("(") && !next.toString().equals(",") && !next.toString().equals(")") && !next.toString().equals("{"))Parser.fail("Not a Statement", s);
+			
 			if (next.checkIf()) {
 				doIf(s, block);
 			}
@@ -101,28 +138,25 @@ public class Parser {
 			if (next.checkAction()) {
 				ActNode act = new ActNode(next.toString());
 				block.add(act);
+				if(!s.next().equals(";")) Parser.fail("failed to find ;", s);
 			}
+			
 		}
+		if(block.isEmpty()) Parser.fail("Block is empty",s);
 		statements.add(new Loop(block));
 	}
 
 	static void doWhile(Scanner s, Queue<RobotProgramNode> statements) {
 		Queue<RobotProgramNode> block = new LinkedList();
-		s.next();
-		Relop relop = new Relop(s.next());
-		s.next();
-		Sen sen = new Sen(s.next());
-		s.next();
-		Cond condition = new Cond(relop, sen, Integer.parseInt(s.next()));
-		s.next();
-		s.next();
-		s.next();
+		Cond condition = findCondition(s);
+
 		while (s.hasNext()) {
-			
-			STMT next = new STMT(s.next());
+			try{
+				STMT next = new STMT(s.next());
 			if (next.toString().equals("}")) {
 				break;
 			}
+			if(!next.isStatement() && !next.toString().equals("(") && !next.toString().equals(",") && !next.toString().equals(")") && !next.toString().equals("{"))Parser.fail("Not a Statement", s);
 			if (next.checkIf()) {
 				doIf(s, block);
 			}
@@ -135,29 +169,31 @@ public class Parser {
 			if (next.checkAction()) {
 				ActNode act = new ActNode(next.toString());
 				block.add(act);
+				if(!s.next().equals(";")) Parser.fail("failed to find ;", s);
+			}
+			}catch(NoSuchElementException e){
+				Parser.fail("failed to read", s);
 			}
 		}
+		if(block.isEmpty()) Parser.fail("Block is empty",s);
 		WhileNode whileNode = new WhileNode(block);
 		whileNode.setConditions(condition);
 		statements.add(whileNode);
+
 	}
 
 	static void doIf(Scanner s, Queue<RobotProgramNode> statements) {
 		Queue<RobotProgramNode> block = new LinkedList();
-		s.next();
-		Relop relop = new Relop(s.next());
-		s.next();
-		Sen sen = new Sen(s.next());
-		s.next();
-		Cond condition = new Cond(relop, sen, Integer.parseInt(s.next()));
-		s.next();
-		s.next();
-		s.next();
+		Cond condition = findCondition(s);
+
 		while (s.hasNext()) {
-			STMT next = new STMT(s.next());
+			try{
+				STMT next = new STMT(s.next());
 			if (next.toString().equals("}")) {
 				break;
 			}
+			if(!next.isStatement() && !next.toString().equals("(") && !next.toString().equals(",") && !next.toString().equals(")") && !next.toString().equals("{"))Parser.fail("Not a Statement", s);
+			
 			if (next.checkIf()) {
 				doIf(s, block);
 			}
@@ -170,8 +206,14 @@ public class Parser {
 			if (next.checkAction()) {
 				ActNode act = new ActNode(next.toString());
 				block.add(act);
+				if(!s.next().equals(";")) Parser.fail("failed to find ;", s);
+
+			}
+			}catch(NoSuchElementException e){
+				Parser.fail("failed to read", s);
 			}
 		}
+		if(block.isEmpty()) Parser.fail("Block is empty",s);
 		IfNode ifNode = new IfNode(block);
 		ifNode.setConditions(condition);
 		statements.add(ifNode);
@@ -184,34 +226,34 @@ public class Parser {
 		// THE PARSER GOES HERE
 		Queue<RobotProgramNode> statements = new LinkedList();
 		while (s.hasNext()) {
-			STMT next = new STMT(s.next());
-			if (next.isStatement()) {
+			try{
+				STMT next = new STMT(s.next());
+			if (next.toString().equals("}")) {
+				break;
+			}
+			if(!next.isStatement() && !next.toString().equals("(") && !next.toString().equals(";") && !next.toString().equals(",") && !next.toString().equals(")") && !next.toString().equals("{"))Parser.fail("Not a Statement", s);
 
-				// checking for while
-				if (next.checkWhile()) {
-					doWhile(s, statements);
-				}
-				// checking for if
-				if (next.checkIf()) {
-					doIf(s, statements);
-				}
-				// checking for loop.
-				if (next.checkLoop() == true) {
-					doLoop(s, statements);
-					// checking for just action.
-				} else if (next.checkAction() == true) {
-					statements.add(new ActNode(next.toString()));
-
-				}
+			if (next.checkIf()) {
+				doIf(s, statements);
+			}
+			if (next.checkWhile()) {
+				doWhile(s, statements);
+			}
+			if (next.checkLoop()) {
+				doLoop(s, statements);
+			}
+			if (next.checkAction()) {
+				ActNode act = new ActNode(next.toString());
+				statements.add(act);
+				if(!s.next().equals(";")) Parser.fail("failed to find ;", s);
 
 			}
-
+			}catch(NoSuchElementException e){
+				Parser.fail("failed to read", s);
+			}
 		}
-
 		Program prog = new Program(statements);
-
 		return prog;
-
 	}
 
 	// utility methods for the parser

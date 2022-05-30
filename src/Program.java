@@ -17,4 +17,7 @@ public class Program implements RobotProgramNode {
         }
     }
     
+    public String toString(){
+        return q.toString();
+    }
 }

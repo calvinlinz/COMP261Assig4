@@ -1,4 +1,4 @@
-public class Sen{
+public class Sen implements RobotEvaluateNode<Integer>{
     public static final String fuelLeft = "fuelLeft";
     public static final String oppLR = "oppLR";
     public static final String oppFB = "oppFB";
@@ -15,7 +15,7 @@ public class Sen{
         this.sen = str;
     }
 
-    public int evaluate(Robot robot) {
+    public Integer evaluate(Robot robot) {
         // TODO Auto-generated method stub
         switch(this.sen){
             case fuelLeft:

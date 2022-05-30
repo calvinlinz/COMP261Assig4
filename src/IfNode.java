@@ -2,15 +2,20 @@ import java.util.Queue;
 
 public class IfNode implements RobotProgramNode{
         
-    private Conditions cond;
+    private Cond cond;
     private Queue<RobotProgramNode> block;
+    private RobotProgramNode elseNode;
     
     public IfNode(Queue<RobotProgramNode> block){
         this.block = block;
     }
 
-    public void setConditions(Conditions cond) {
+    public void setConditions(Cond cond) {
         this.cond = cond;
+    }
+
+    public void setElseBlock(RobotProgramNode elseBlock){
+        this.elseNode = elseBlock;
     }
     
     @Override
@@ -23,11 +28,20 @@ public class IfNode implements RobotProgramNode{
                 node.execute(robot);
             }
         }
+        // }else{
+        //     elseNode.execute(robot);
+        // }
     }
     
         
         public String toString(){
-            return "if(" + cond.toString() + "){" + block.toString() + "}";
+            String insert = "";
+            for(RobotProgramNode node : block){
+                insert += "     "+ node.toString() + ";";
+            }
+            String str =   "if(" + cond.toString() + "){" + "\n" + insert + "\n}";
+    
+            return str;
         }
         
     

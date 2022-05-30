@@ -1,6 +1,8 @@
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
 
@@ -10,6 +12,8 @@ public class STMT implements RobotProgramNode{
     Queue<RobotProgramNode> statements = new LinkedList<>();
     public HashSet<String> acts = new HashSet<>();
     RobotProgramNode temp = null;
+    static Pattern RELOP = Pattern.compile("lt|gt|eq");
+	static Pattern SEN = Pattern.compile("fuelLeft|oppLR|oppFB|numBarrels|barrelLR|barrelFB|wallDist");
 
     String s;
 
@@ -22,12 +26,13 @@ public class STMT implements RobotProgramNode{
         acts.add("wait");
         acts.add("takeFuel");
         acts.add("shieldOn");
+        acts.add("turnAround");
         acts.add("shieldOff");
        this.s = s;
     }
 
     public Boolean isStatement(){
-        if(checkAction() || checkLoop() || checkIf() || checkWhile()){
+        if(checkAction() || checkLoop() || checkIf() || checkWhile() || checkRelop() || checkSen()){
             return true;
         }
         else return false;
@@ -40,6 +45,20 @@ public class STMT implements RobotProgramNode{
        return false;
     }
 
+    public Boolean checkRelop(){
+        Matcher rt = RELOP.matcher(s);
+        if(rt.matches()){
+           return true;
+        }
+        return false;
+     }
+     public Boolean checkSen(){
+        Matcher st = SEN.matcher(s);
+        if(st.matches()){
+           return true;
+        }
+        return false;
+     }
     public Boolean checkLoop(){
         if(this.s.equals("loop")){
            return true;
